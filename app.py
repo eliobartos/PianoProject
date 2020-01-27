@@ -3,7 +3,7 @@ import time
 import keyboard
 from random import randrange
 import os
-
+import re
 
 # Load sound
 base_path = os.getcwd()
@@ -63,11 +63,13 @@ def get_random_scale():
 
 def play_random_tones(current_scale, number_of_tones):
     played_tones = []
+    played_tones_exact = []
     for i in range(number_of_tones):
         index = randrange(len(current_scale))
-        playsound(tones[current_scale[index]])
         played_tones.append(index)
-    return played_tones
+        played_tones_exact.append(tones[current_scale[index]])
+        playsound(tones[current_scale[index]])
+    return played_tones, played_tones_exact
 
 
 def play_tones(current_scale, played_tones):
@@ -87,11 +89,17 @@ def change_number_of_tones(number_of_tones, by):
     return number_of_tones
 
 
-def show_answer(played_tones):
+def show_answer(played_tones, played_tones_exact):
     print("\nThat was: ", end="")
     for i in played_tones[0:-1]:
         print(tones_number[i], end=", ")
-    print(tones_number[played_tones[-1]])
+    print(tones_number[played_tones[-1]], end="")
+
+    print(" (", end="")
+    for i in played_tones_exact[0:-1]:
+        print(re.sub(".*[0-9]{2}(.*)\.mp3", "\\1", i), end=", ")
+    print(re.sub(".*[0-9]{2}(.*)\.mp3", "\\1", played_tones_exact[-1]), end="")
+    print(")")
     time.sleep(0.2)
 
 
@@ -126,10 +134,10 @@ def app():
                 break
 
             elif keyboard.is_pressed('n'):  # Next
-                played_tones = play_random_tones(current_scale, number_of_tones)
+                played_tones, played_tones_exact = play_random_tones(current_scale, number_of_tones)
 
             elif keyboard.is_pressed('m'):
-                show_answer(played_tones)
+                show_answer(played_tones, played_tones_exact)
 
             elif keyboard.is_pressed('b'):  # Repeat
                 play_tones(current_scale, played_tones)
