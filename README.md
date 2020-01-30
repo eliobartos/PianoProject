@@ -5,4 +5,5 @@ App plays random tones from major scale and you need to guess which tone from th
 You can change scales, play whole scale, repeat played tone, play multiple tones and try to guess them all and see the answers.
 
 app.py - for windows
+
 app_mac.py - for mac OS
